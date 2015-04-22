@@ -1,0 +1,134 @@
+html,body{height:100%;}
+body {background-image:url('./skins/header-red.jpg');background-repeat:repeat-x;background-position:top left; background-color:#fff;}
+ table#maintable th {text-align:center;border:1px solid #ccc;font-size:12px;background:#b63a3a;color:#fff;}
+table#maintable th a {color:#fff;}
+body,#footer,ul {margin:0;padding:0;}
+body,p,td,h1,h2,a,a:hover {font-family:Verdana,Helvetica,sans-serif;font-size:12px}
+h1 {font-size:18px}
+h2 {font-size:14px}
+h3 {color:#5B1C18;}
+a {color:#5B1C18;}
+a:hover {color:#06C;text-decoration:none}
+img {border:0;}
+textarea {font-family:Arial,Helvetica,sans-serif;font-size:10pt}
+
+#container {margin:0 auto; width:90%; border:0;  min-height: 100%;}
+#top{color:#fff;margin:5px 0 0;height:20px;text-align:right;}
+#header {height:80px;}
+
+#nav {margin:0 0 20px;height:25px;width:inherit;float:left;border:0;display:inline; padding-top:2px;}
+#nav a {color:#fff;padding:0 4px;}
+#nav ul li img {display:none;}
+
+#login {float:right;}
+
+#content {margin:20px 0 0; background:none; padding-bottom:55px; overflow:auto;}
+#footer {
+	position:relative;
+	margin-top:-55px;
+	height:25px; 
+	text-align:left; 
+	padding:15px 20px; 
+	background-color:#ccc;
+	color:#000;}
+.footer_right{float:right;}
+
+ul {list-style:none;}
+ul li {display:inline;}
+#footer ul li {display:block;}
+
+label {margin-right:0.5em;width:10em;float:left;text-align:left;display:block;}
+label.inline-label{margin-left:1em; width:auto; float:none; display:inline; font-size:100%; }
+
+/** searching **/
+.noresults{font-style:italic; font-family:times new roman,georgia,helvitica,tahoma; font-size:large; padding:2em; font-weight:bold; font:lighter; text-align:center;}
+#search-az {text-align:center;}
+#search-query {font-size:100%; padding:5px;}
+#a-z a {font-size:75%;} 
+
+.odd {background:#e5e5e5;}
+.even {background:#f3f3f3;}
+
+#right,.right {float:right;}
+#left,.left {float:left;}
+.clear {clear:both;}
+
+table {width:100%;border:1px solid #ccc;border-collapse:collapse;}
+table tr td {border:1px solid #ccc;}
+table img,.center {text-align:center;}
+table th {text-align:left;padding:8px 4px;}
+span.table_listing {
+	display:table;
+	margin:5px 0;
+	font-size:smaller;
+}
+.tablespace td {border:0;}
+
+/* View.php */
+table#view,table#view td {border:1px solid #000;border-collapse:collapse;}
+table#view td {padding:5px;}
+
+div.view div{display:inline-block;}
+
+div.view h3{background-color:#AA352E; color:#fff; padding:2px;}
+div.view textarea{width:100%;}
+div.view ul li {display:block;}
+div.view ul li span{display:inline-block;}
+div.indented_list {margin: .5em 1em;}
+div.addresses {float:none; border:0px;}
+
+div.addresses{
+	float:inherit;
+	width:auto;
+	padding:10px 2%;
+}
+/** Notices and Errors **/
+
+#flashMessage.info{
+	background: -moz-linear-gradient(center top , #F7F4F4, #E0DEDE) repeat-x scroll 0 0 #E0DEDE;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+   border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;
+    color: #404040;
+    font-size:140%;
+    font-style:italic;
+    margin-bottom: 18px;
+    padding: 7px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);}
+
+.icon-print:before{
+	font-size:2.5em;
+	border:2px outset #ccc;
+	padding:5px;
+	background-color:#ccc;
+	font-weight:bold;
+}
+a.icon-print{
+	text-decoration:none;
+	color:#000;
+}
+
+/* Edit */
+#content input[type=text],#content textarea, #content input[type=password] {width:220px; margin-bottom:3px;}
+#content input[type=text], input[type=passowrd] {height:1,1em}
+#content textarea {height:8em}
+input.byear{width:4em !important;}
+div.form fieldset legend {color:#421411;}
+form .submit input[type="submit"] {
+    background: -moz-linear-gradient(center top , #D83E36, #4C1815) repeat scroll 0 0 #D83E36;
+    border-color: #4C1815;
+    color: #FFFFFF;
+    padding: 8px 10px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+} 
+form .submit input[type="submit"]:hover {
+    background: none repeat scroll 0 0 #D83E36;
+}
+.edit_button img{
+	text-align:right;
+}
+
+/* Login */
+#content input[name=user],input[name=pass] {width:150px; margin-bottom:3px;}
+.highlight{background-color:yellow;}
+
