@@ -673,10 +673,11 @@ END:VCARD";
 			}
 			$this->set('filters',$filters);
 		}	
-			
+		// TODO: retrieve the external links for Staff data too
+		
 		//if (!empty($conditions)) $people = $this->Address->find('all',array('conditions'=>$conditions));
 		//else $people= $this->Address->find('all');
-		$this->Paginator->settings = array('recursive'=>1);
+		$this->Paginator->settings = array('recursive'=>2);
 		if (!empty($conditions)) $people = $this->Paginator->paginate('Address',$conditions);
 		else $people = $this->Paginator->paginate('Address');
 	

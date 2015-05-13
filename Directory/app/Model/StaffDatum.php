@@ -60,6 +60,14 @@ class StaffDatum extends Model {
 		
 	);
 	
+	
+	public $hasMany = array(
+			'ExternalLinks'=>array(
+					'className'=>'ExternalLink',
+					'foreignKey'=>'library_data_id'
+			)
+	);
+	
 	/**
 	 * connects to the readonly view on one-to-one level
 	 * to pull in additional non-editable data

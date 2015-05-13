@@ -91,7 +91,7 @@ class StaffDataController extends AppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			//debug($this->request->data);
 			// If the form data can be validated and saved...
-			if ($this->StaffDatum->save($this->request->data)) {
+			if ($this->StaffDatum->saveAssociated($this->request->data)) {
 				// Set a session flash message and redirect.
 				$this->Session->setFlash('Library data Saved!');
 				return $this->redirect($this->request->data['StaffDatum']['return_url']);
@@ -124,6 +124,61 @@ class StaffDataController extends AppController {
 		}
 	}
 	
+	/**
+	 * Edit an entry
+	 * Will require admin level access
+	 * @param int $id
+	 */
+	public function edit_test($id=null){
+		if (!$id) {
+			$this->Session->setFlash('Invalid entry.  You cannot add new staff to the database. ','error');
+			//throw new NotFoundException(__('Invalid entry.  You cannot add new staff to the database. '));
+			//$this->layout='error';
+			$this->render(false);
+		}
+		else {
+			$this->StaffDatum->id=$id;
+	
+			// Has any form data been POSTed?
+			if ($this->request->is('post') || $this->request->is('put')) {
+				
+				// If the form data can be validated and saved...
+				//print_r($this->request->data['ExternalLinks']);
+				
+				if ($this->StaffDatum->saveAssociated($this->request->data)) {
+					// Set a session flash message and redirect.
+					
+					$this->Session->setFlash('Library data Saved!');
+					return $this->redirect($this->request->data['StaffDatum']['return_url']);
+				}
+				
+				else {
+					
+					debug($this->data);
+					debug($this->request->data);
+					$this->Session->setFlash('Error saving Library data');
+				}
+			}
+	
+			
+			$this->set('return_url',$this->referer());
+	
+			$departments = $this->StaffDatum->Department->find('list');
+			//foreach ($departments as $top_dept){
+			//$department_options = $departments;
+			//}
+			//debug ($department_options);
+			$this->set('departments',$departments);
+	
+			if (!$this->request->data){
+				$this->request->data= $this->StaffDatum->findById($id);
+				$this->set('subjects',$this->StaffDatum->Subjects->find('list'));
+					
+			}
+			$this->set('title_for_layout', 'Edit entry');
+			$this->render('test_form');
+		}
+	}
 	/** 
 	 * Proceed cautiously with this one, as many of the entires are created and updated elsewhere
 	 * Deletes the deletable infomation for an entry.
