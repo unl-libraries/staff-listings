@@ -35,7 +35,7 @@ $cakeDescription = __d('cake_dev', 'Library Directory');
 		echo $this->Html->css('addressbook_style');
 		echo $this->Html->css('fontello');
     	echo $this->Html->css('animation');
-
+    	echo $this->Html->script("http://code.jquery.com/jquery.min.js");
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
