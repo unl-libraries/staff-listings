@@ -74,6 +74,6 @@ else echo "<tr><td colspan=".(count($addressFields)+1)." class='noresults'><span
 	jQuery.noConflict();
 	jQuery(document).ready(function() {
 		window.print();
-		window.close();
+		setTimeout("window.close()", 100);
 	});	
 	</script>
