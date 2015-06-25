@@ -33,7 +33,7 @@ function show_people(personElement){
                                 	}
                                 	else thisPerson = '';
                                 	lastLetter = letter;
-                                	thisPerson += formatPersonData(value.Address,value.StaffData.ExternalLinks);
+                                	thisPerson += formatPersonData(value.Address,value.StaffData);
                                 	if (personCount==6){
                                 		personCount=0;
                                 		//thisPerson +='<div style="float:right;"><a href="'+currentURL+'#letters">Back to top</a>';

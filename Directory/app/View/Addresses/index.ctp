@@ -124,6 +124,7 @@ if (!empty($addresses)){
 				echo '<td class="actions">';
 				echo $this->Html->link(__d('cake', 'View'), array('action' => 'view', $address['Address']['userid']));
 				if (AuthComponent::user('id')) echo ' ' . $this->Html->link(__d('cake', 'Edit'), array('controller' => 'staff_data','action' => 'edit', $address['StaffData']['id']));
+				//if (AuthComponent::user('id')) echo ' ' . $this->Html->link(__d('cake', 'Test'), array('controller' => 'staff_data','action' => 'edit_test', $address['StaffData']['id']));
 				echo '</td>';
 			}
 		echo '</tr>';
