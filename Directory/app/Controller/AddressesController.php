@@ -42,7 +42,7 @@ class AddressesController extends AppController {
 		parent::beforeFilter();
 		// Allow only these actions.
 		
-		$this->Auth->allow('view', 'index','print_view','search','vcard','export','get_letters','public_index','public_feed','feed');
+		$this->Auth->allow('view', 'index','print_view','search','vcard','export','get_letters','public_index','public_feed','staff_listing','faculty_listing');
 		if (isset($this->params['url']['ext']) && $this->params['url']['ext'] == 'json') {
 			$this->Auth->allow($this->action);
 		}
@@ -638,6 +638,7 @@ END:VCARD";
  * 
  */
  public function public_feed($letter=null){
+ 	$paginate = array('order'=>'name');
  		$suppressed_fields= Configure::read('feeds.suppressed_fields');
 		$conditions = array('unl_status !='=>'emeriti');
 		if (isset($letter)){
@@ -695,10 +696,56 @@ END:VCARD";
     	if ($cb) echo $cb."(".json_encode($content).");";
     	else echo json_encode($content);
 	}
+	
+	public function faculty_listing($letter=null){
+		$suppressed_fields= Configure::read('feeds.suppressed_fields');
+		$conditions = array('unl_status'=>'faculty');
+		if (isset($letter)){
+			$conditions['last_name LIKE']=$letter.'%';
+		}
+		if (!empty($conditions)) $people = $this->Address->find('all',array('conditions'=>$conditions));
+		else $people = $this->Address->find('all');
+		$content=array();
+		foreach ($people as $person):
+		$content['people'][]=$person;
+		endforeach;
+		$this->autoRender = false; // We don't render a view in this example
+		//$this->request->onlyAllow('ajax'); // No direct access via browser URL
+		//header('Content-Type: application/json');
+		$cb = $_GET['callback'];
+		$this->RequestHandler->respondAs('json');
+		$this->response->header('Content-Type: application/json');
+		if ($cb) echo $cb."(".json_encode($content).");";
+		else echo json_encode($content);
+	}
+	
 
-	public function get_letters(){
+	public function staff_listing($letter=null){		
+		$suppressed_fields= Configure::read('feeds.suppressed_fields');
+		$conditions = array('unl_status'=>'staff');
+		if (isset($letter)){
+			$conditions['last_name LIKE']=$letter.'%';
+		}		
+		if (!empty($conditions)) $people = $this->Address->find('all',array('conditions'=>$conditions));		
+		else $people = $this->Address->find('all');
+		$content=array();
+		foreach ($people as $person):
+		$content['people'][]=$person;
+		endforeach;
+		$this->autoRender = false; // We don't render a view in this example
+		//$this->request->onlyAllow('ajax'); // No direct access via browser URL
+		//header('Content-Type: application/json');
+		$cb = $_GET['callback'];
+		$this->RequestHandler->respondAs('json');
+		$this->response->header('Content-Type: application/json');
+		if ($cb) echo $cb."(".json_encode($content).");";
+		else echo json_encode($content);
+	}
+	
+	public function get_letters($status){		
 		foreach (range('a','z') as $starting_letter){
-			$content['letters'][$starting_letter]=$this->Address->find('count',array('conditions'=>array('last_name LIKE'=>$starting_letter.'%')));
+			if (!empty($status)) $content['letters'][$starting_letter]=$this->Address->find('count',array('conditions'=>array('unl_status'=>$status,'last_name LIKE'=>$starting_letter.'%')));
+			else $content['letters'][$starting_letter]=$this->Address->find('count',array('conditions'=>array('last_name LIKE'=>$starting_letter.'%')));
 		}
 		$this->autoRender = false; // We don't render a view in this example
 		$cb = $_GET['callback'];

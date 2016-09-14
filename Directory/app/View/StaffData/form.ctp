@@ -48,7 +48,7 @@
 				echo "</div>";
 				echo "<div class='inline-input'>";
 					echo "Type of link:<br/>";
-					echo $this->Form->input("ExternalLinks.$i.link_type",array('type'=>'select','options'=>array(""=>"Select a type","linkedin"=>"LinkedIn","facebook"=>"Facebook","twitter"=>"Twitter","blog"=>"Blog"),'div'=>false,'label'=>false,'class'=>'inline'));
+					echo $this->Form->input("ExternalLinks.$i.link_type",array('type'=>'select','options'=>array(""=>"Select a type","digitalcommons"=>"Digital Commons","linkedin"=>"LinkedIn","facebook"=>"Facebook","twitter"=>"Twitter","blog"=>"Blog"),'div'=>false,'label'=>false,'class'=>'inline'));
 				echo "</div>";				
 				echo ' ' . $this->Html->link(
 						__d('cake', " - "),
@@ -96,6 +96,7 @@ $('#add-link-button').click(function(event){
     '<div class="inline-input">External link:<br><input name="data[ExternalLinks]['+linkCount+'][url]" class="inline" maxlength="255" type="text" id="ExternalLinks'+linkCount+'Url"></div>'+
     '<div class="inline-input">Type of link:<br><select name="data[ExternalLinks]['+linkCount+'][link_type]" class="inline" id="ExternalLinks'+linkCount+'LinkType">'+
     '<option value="">Select a type</option>'+
+    '<option value="digitalcommons">Digital Commons</option>'+
     '<option value="linkedin">LinkedIn</option>'+
     '<option value="facebook">Facebook</option>'+
     '<option value="twitter">Twitter</option>'+
