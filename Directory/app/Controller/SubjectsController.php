@@ -73,7 +73,7 @@ class SubjectsController extends AppController {
 		if (!$this->Auth->loggedIn()) {
 			$this->Auth->authError = false;
 		}
-		$this->Auth->allow('view', 'index','print_view','view_all','feed','get_letters');
+		$this->Auth->allow('view', 'index','print_view','view_all','feed','subject_listing','get_letters');
 	}
 	
 	/**
@@ -140,6 +140,40 @@ class SubjectsController extends AppController {
 				$c++;
 			}
 		}	
+		$content=array();
+		$content['subjects']=$subjects;
+		$content['params']=$this->params;
+		$this->autoRender = false; // We don't render a view in this example
+		//$this->request->onlyAllow('ajax'); // No direct access via browser URL
+		//header('Content-Type: application/json');
+		$cb = $_GET['callback'];
+		$this->RequestHandler->respondAs('json');
+		$this->response->header('Content-Type: application/json');
+		if ($cb) echo $cb."(".json_encode($content).");";
+		else echo json_encode($content);
+	}
+	
+	/**
+	 * json subject listing for use in other applications, including staff information
+	 * @param character $letter the letter to filter on.  defaults to 'a'
+	 */
+	public function subject_listing($letter = null){
+		$this->Paginator->settings = array(
+				'recursive'=>1
+		);
+		if (empty($letter)) $subjects= $this->Subject->find('all',array('recursive'=>1));
+		else{
+			$conditions['subject LIKE']=$letter.'%';
+			$subjects = $this->Subject->find('all',array('conditions'=>$conditions,'recursive'=>1));
+		}
+		foreach ($subjects as $i=>$subject){
+			$c=0;
+			foreach ($subject['Faculty'] as $faculty){
+				$faculty_info = $this->Subject->Faculty->findByUserid($faculty['userid']);
+				$subjects[$i]['Faculty'][$c]['Address']=$faculty_info['Address'];
+				$c++;
+			}
+		}
 		$content=array();
 		$content['subjects']=$subjects;
 		$content['params']=$this->params;
