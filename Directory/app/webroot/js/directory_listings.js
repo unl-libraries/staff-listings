@@ -63,7 +63,7 @@ function init(view){
       jQuery.each(libData.ExternalLinks,function(index,value){         
           if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='http://libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
           if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='http://libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
-          if (value.link_type == 'digitalcommons') { addLink = "<br /><a title=''Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
+          if (value.link_type == 'digitalcommons') { addLink = "<br /><a title='Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
       });
       thisPersonHtml += addLink;
       thisPersonHtml +='</p>';
