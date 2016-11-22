@@ -12,6 +12,35 @@ var currentURL = location.href.replace(location.hash,"");
                  else { jQuery("<span>",{html:letter.toUpperCase(),class:"letter"}).appendTo("#letters");}
        });
    });
+  
+  function formatPersonData(person,libData){
+      var thisPersonHtml ='';
+      if(person.libguide_profile) {
+      thisPersonHtml +="<strong><a href='"+person.libguide_profile+"'>"+person.display_name+"<\/a><\/strong>&nbsp;";
+      }
+      else{ thisPersonHtml += "<strong>"+person.display_name+"<\/strong>";}
+      if(person.website) { thisPersonHtml += "&nbsp;<a href='"+person.website+"' class='social_media_icon'><img src='images/SocialMedia/web-20.png' /><\/a>";}
+      jQuery.each(libData.ExternalLinks,function(index,value){
+      if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' class='social_media_icon'><img src='images/SocialMedia/twitter-20.png' /><\/a>";}
+      if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' class='social_media_icon'><img src='images/SocialMedia/linkedin-20.png'/><\/a>";}
+      if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' class='social_media_icon'><img src='images/SocialMedia/facebook-20.png'/><\/a>";}
+      });
+      thisPersonHtml += "<br />\n";     
+      thisPersonHtml += person.unl_position+"<br />";
+      if(person.library_position){ thisPersonHtml += person.library_position+"<br />\n"; }
+      if (libData.Subjects.length > 0){
+        thisPersonHtml += "Subject specialties: ";
+       thisPersonHtml += libData.Subjects.map(function(elem){
+            return elem.subject;
+       }).join(", ");
+       thisPersonHtml += "<br />\n";
+      }
+      thisPersonHtml +=person.address+"<br />\n";
+      thisPersonHtml +=person.phone+"<br />\n";
+      thisPersonHtml +="<a href='mailto:"+person.email+"'>"+person.email+"<\/a>\n";             
+      return thisPersonHtml;
+  }
+  
 function show_people(personElement){
      var pageCount;
 	jQuery.getJSON('http://libdirectory.unl.edu/addresses/public_feed/?callback=?',
