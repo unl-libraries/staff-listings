@@ -12,9 +12,7 @@
 import json
 import urllib2
 import codecs
-import mysql.connector
-from mysql.connector import errorcode
-import csv
+
 #configuration items
 
 ## open the csv file
