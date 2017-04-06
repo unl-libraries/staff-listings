@@ -3,27 +3,37 @@ jQuery.ajaxSetup({
     contentType: "application/json; charset=utf-8"
 });
 
+function DirectoryListing(){
+	this.server = '';
+	this.currentLetter = 'a'; // letter currently viewing for 
+	this.view = null; //the view : faculty, staff or subjects
+	return this;
+}
+
 /** 
  * init will be called on page load for each listing
  * 
- * @param view string value of either 'faculty', 'staff' or 'subjects'
+ *  @param view string value of either 'faculty', 'staff' or 'subjects'
  */
-function init(view){
+DirectoryListing.prototype.init = function(view){
+	if (location.hash.replace('#','')) {
+		this.currentLetter = location.hash.replace('#','');
+	}    
 	//execute the function from letter_nav.js that displays the alphabet links
-	letter_nav(view);
+	this.view = view;
+	this.letter_nav(view);
 	//initialize the page
-	var currentLetter= location.hash.replace('#','');
-    if (!currentLetter){ currentLetter = 'a';}
-	  if (view == 'subjects') { 
-		  show_subjects({tag:'div',tag_class:'subject_info'},currentLetter);
+
+	  if (this.view == 'subjects') { 
+		  this.show_subjects({tag:'div',tag_class:'subject_info'},this.currentLetter);
 	  }
 	  else{
-		  show_people({tag:'div',tag_class:'directory_info'},view,currentLetter);
+		  this.show_people({tag:'div',tag_class:'directory_info'},this.currentLetter);
 	  }
 		jQuery('html, body').animate({
 	        scrollTop: jQuery("#directory_heading").offset().top
 	    }, 0);
- }
+}
 
   
 /** format people listings
@@ -32,11 +42,11 @@ function init(view){
  * @param view  the type of view: 'faculty' or 'staff'
  * @returns {String} formatted HTML string
  */
-  function formatPersonData(person,libData,view){
+DirectoryListing.prototype.formatPersonData = function(person,libData){
       var thisPersonHtml ='';
       thisPersonHtml +='<div class="bp480-wdn-col-one-half box_hidden">';
       thisPersonHtml +='<div class="wdn-col box_dir">';
-      if (view == 'faculty'){
+      if (this.view == 'faculty'){
     	  //we only show the person's picture if they are faculty
     	  thisPersonHtml +='<div class="bp640-wdn-col-one-half">';      
     	  thisPersonHtml +='    <figure class="wdn-frame">';
@@ -87,7 +97,7 @@ function init(view){
       thisPersonHtml +='</div>'; //bp480-wd-col-one-half class
       
       return thisPersonHtml;
-      }
+ }
   
   /** call to query for the json list of people and load them up in the divs 
    * 
@@ -95,7 +105,9 @@ function init(view){
    * @param view string indication whether to show 'faculty' or 'staff' records
    * @param lettertoShow the letter to filter on (or 'all' to show all records of the view type)
    */
-function show_people(personElement, view, lettertoShow){
+DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
+
+    var self = this;
 	jQuery("#people").html('<section class="wdn-band"><div class="wdn-center"><div id="floatingBarsG">\
 			<div class="blockG" id="rotateG_01"></div>\
 			<div class="blockG" id="rotateG_02"></div>\
@@ -110,8 +122,8 @@ function show_people(personElement, view, lettertoShow){
 	if (lettertoShow=='all') {lettertoShow='';}
 	//else if (lettertoShow =='') { lettertoShow = 'a';}
      var people=[]; //array to hold people html elements
-     console.debug("Starting to create profiles in "+personElement.tag + personElement.tag_class + " for letter "+lettertoShow);
-	 jQuery.getJSON('http://libdirectory.unl.edu/addresses/'+view+'_listing/'+lettertoShow+'?callback=?',
+     //console.debug("Starting to create profiles in "+personElement.tag + personElement.tag_class + " for letter "+lettertoShow);
+	 jQuery.getJSON(this.server+'/addresses/'+this.view+'_listing/'+lettertoShow+'?callback=?',
 			function(data){												
 				var columnCount = 0;
 				var letter='';  //the current first letter of the section to display 
@@ -157,7 +169,7 @@ function show_people(personElement, view, lettertoShow){
                 		//start a new row                                
                 		thisPerson +='<div class="wdn-col-full" style="padding-top:10px;">';
                 	}
-                	thisPerson += formatPersonData(value.Address,value.StaffData,view);
+                	thisPerson += self.formatPersonData(value.Address,value.StaffData);
                 	columnCount++;
                 	if (columnCount==2){
                 		columnCount=0;
@@ -179,7 +191,8 @@ function show_people(personElement, view, lettertoShow){
  * @param subjectElement an array describing the element to update with the listings
  * @param lettertoShow the letter to filter on (or 'all' to show all records of the view type)
  */
-function show_subjects(subjectElement,lettertoShow){
+DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow){
+    var self = this;
 	jQuery("#subject_people").html('<section class="wdn-band"><div class="wdn-center"><div id="floatingBarsG">\
 			<div class="blockG" id="rotateG_01"></div>\
 			<div class="blockG" id="rotateG_02"></div>\
@@ -190,11 +203,11 @@ function show_subjects(subjectElement,lettertoShow){
 			<div class="blockG" id="rotateG_07"></div>\
 			<div class="blockG" id="rotateG_08"></div>\
 		</div></div></section>');
-	console.log("showing subjects for letter "+lettertoShow);
+	//console.log("showing subjects for letter "+lettertoShow);
 	if (lettertoShow=='all') {lettertoShow='';}
-	console.log("requesting json from "+'http://libdirectory.unl.edu/subjects/subject_listing/'+lettertoShow+'?callback=?');
+	//console.log("requesting json from "+'http://libdirectory.unl.edu/subjects/subject_listing/'+lettertoShow+'?callback=?');
      var pageCount;
-	jQuery.getJSON('http://libdirectory.unl.edu/subjects/subject_listing/'+lettertoShow+'?callback=?',
+	jQuery.getJSON(this.server+'/subjects/subject_listing/'+lettertoShow+'?callback=?',
 			function(data){
 				var subjectCount = 0;
 				var columnCount = 0;
@@ -245,8 +258,8 @@ function show_subjects(subjectElement,lettertoShow){
 	                       		//start a new row ?
 	                       		thisSubject += '<div class="wdn-col-full" style="padding-top:10px;">';
 	                       	}
-	                    	thisSubject += formatSubjectData(value.Subject.subject,faculty.Address);
-	                    	console.log(faculty.Address.display_name + ' is column '+ columnCount);
+	                    	thisSubject += self.formatSubjectData(value.Subject.subject,faculty.Address);
+	                    	//console.log(faculty.Address.display_name + ' is column '+ columnCount);
 	                    	columnCount ++;	                    	
 	                        if (columnCount==2){	                        	
 	 	                	   columnCount = 0;
@@ -269,7 +282,7 @@ function show_subjects(subjectElement,lettertoShow){
  * @param subjectperson associated person data
  * @returns {string} HTML formatted string to render in page
  */
-function formatSubjectData(subject,subjectperson){
+DirectoryListing.prototype.formatSubjectData = function(subject,subjectperson){
     var thisSubjectHtml ='';
     thisSubjectHtml +='<div class="bp480-wdn-col-one-half box_hidden">';
     thisSubjectHtml +='<div class="wdn-col-full" style="width:100%;padding:0;">';
@@ -302,12 +315,15 @@ function formatSubjectData(subject,subjectperson){
  * @param view string indicating what type of view ('staff','faculty' or 'subjects')
  * @returns {Boolean} returns false if incorrect view sent
  */
-function letter_nav(view){
+DirectoryListing.prototype.letter_nav = function(){
+
+    var self = this;
 	var currentURL = location.href.replace(location.hash,"");
-	if (view=='staff'){ letter_query = 'http://libdirectory.unl.edu/addresses/get_letters/staff/?callback=?';}
-	else if (view=='subjects'){letter_query = 'http://libdirectory.unl.edu/subjects/get_letters?callback=?';}
-	else if (view=='faculty'){letter_query='http://libdirectory.unl.edu/addresses/get_letters/faculty/?callback=?';}
+	if (this.view=='staff'){ letter_query = this.server+'/addresses/get_letters/staff/?callback=?';}
+	else if (this.view=='subjects'){letter_query = this.server+'/subjects/get_letters?callback=?';}
+	else if (this.view=='faculty') {letter_query=this.server+'/addresses/get_letters/faculty/?callback=?';}
 	else{return false;}
+	console.debug(this.server, this.currentLetter, this.view);
    jQuery.getJSON(letter_query,
     function(data) {
          jQuery.each(data.letters, function(letter,count){
@@ -320,25 +336,23 @@ function letter_nav(view){
          //add the all option - eww - hate this
          jQuery("<a>",{html:"[ All ]", href:currentURL+"#all",class:"letter letter_link letter_all"}).appendTo(".letters");
          
-         var currentLetter = location.hash.replace("#",'');
-         if (!currentLetter) currentLetter = 'a';
-         jQuery(".letter_"+currentLetter).addClass('selected'); //start with a as default
+         jQuery(".letter_"+self.currentLetter).addClass('selected'); //start with a as default
          jQuery(".letter_link").click(function(){   
         	 
-        	 currentLetter = jQuery(this).attr('class').replace(/letter letter_link letter_(\w+)(.*)/,'$1');   
+        	 self.currentLetter = jQuery(this).attr('class').replace(/letter letter_link letter_(\w+)(.*)/,'$1');   
         	 //remove the selected in case someone clicks the same letter twice!
         	
-        	 console.debug("Clicked the letter "+currentLetter);
-             if (view=='subjects'){            	 
-            	 show_subjects({tag:'div',tag_class:'subject_info'}, currentLetter);            	 
+        	 
+             if (self.view=='subjects'){            	 
+            	 self.show_subjects({tag:'div',tag_class:'subject_info'}, self.currentLetter);            	 
              }
              else{
             	 
-            	 show_people({tag:'div',tag_class:'directory_info'}, view, currentLetter);
+            	 self.show_people({tag:'div',tag_class:'directory_info'}, self.currentLetter);
             	}
              jQuery('.letter_link').removeClass('selected');
              //jQuery(this).addClass('selected');
-             jQuery(".letter_"+currentLetter).addClass('selected'); //start with a as default
+             jQuery(".letter_"+self.currentLetter).addClass('selected'); //start with a as default
             	
          });
          

@@ -34,6 +34,7 @@
 	
 	<?php echo $this->Form->input('preferred_name');?>
 	<?php echo $this->Form->input('library_title');?>
+	If is necessary to override the UNL status of individual: <?php echo $this->Form->input('library_status',array('type'=>'select','options'=>array(""=>"Library Status","faculty"=>"Faculty","staff"=>"Staff")));?>
 	<fieldset><legend>Links</legend>
 		<?php echo $this->Form->input('website');?>
 		<?php echo $this->Form->input('libguide_profile',array('label'=>"Libguide profile link"))?>
