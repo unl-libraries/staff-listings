@@ -33,5 +33,5 @@ To set up the javascript for use in a page:
        `<div id="people" class="dont-break-out"></div>` for people
   5. Include the following to initialize the page where [view name] = 'subjects' or 'staff' or 'faculty':
       
-      `<script language="javascript" type="text/javascript">init('[view name]');</script>` 
+      `<script language="javascript" type="text/javascript">listings = new DirectoryListing(); listings.init('[view name]');</script>` 
       
