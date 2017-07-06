@@ -1,16 +1,17 @@
 # Staff listings
 Code used to produce the faculty and staff listings in applications
 
-## Includes ldap fetches for csv that can be imported in mysql database
-### ldap_fetch.pl
-  PERL script that performs LDAP queries for individuals that match a particular org unit number.  Paged requests by letter to make the requests manageable using a filter (SN=$letter*)
+## Includes fetches for data that can be imported in mysql database
+### harvest_people.py
+ Python script that queries the UNL api at https://directory.unl.edu/ for individuals by department number.  
   The attributes we need are written to a csv file.  
 
-Requires the following PERL modules:
-`Net::LDAP`
-`XML::LibXML`
+ Requires the following python imports:
+`json`
+`urllib2` for querying the api
+`codecs` for opening and writing to the file
 
-Also need ldap certificates on the server to make secure connection. 
+The csv writing is very simple joined output and didn't seem necessary to use full csv support.
 
 ## javascript that uses json feeds to produces listings formatted to match the local CMS specifications
 
@@ -32,5 +33,5 @@ To set up the javascript for use in a page:
        `<div id="people" class="dont-break-out"></div>` for people
   5. Include the following to initialize the page where [view name] = 'subjects' or 'staff' or 'faculty':
       
-      `<script language="javascript" type="text/javascript">init('[view name]');</script>` 
+      `<script language="javascript" type="text/javascript">listings = new DirectoryListing(); listings.init('[view name]');</script>` 
       
