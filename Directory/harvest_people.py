@@ -12,9 +12,7 @@
 import json
 import urllib2
 import codecs
-import mysql.connector
-from mysql.connector import errorcode
-import csv
+
 #configuration items
 
 ## open the csv file
@@ -44,9 +42,9 @@ for person in personnel:
         person_url = urllib2.urlopen("https://directory.unl.edu/people/"+str(uid)+".json")
         #print person_url
         person_data = json.load(person_url)
-        print >> output, ",".join([
+        print >> output, '"'+"\",\"".join([
             ";".join(person_data['displayName']),
-            ";".join(person_data['givenName']),
+            ";".join(person_data['givenName']),            
             ";".join(person_data['sn']),
              str(uid),
             ";".join(person_data['eduPersonPrimaryAffiliation']),            
@@ -54,8 +52,8 @@ for person in personnel:
             ";".join(person_data['title']),
             ";".join(person_data['mail']),
             ";".join(person_data['telephoneNumber']),               
-            '"'+";".join(person_data['unlHRAddress'])+'"'
-            ])
+            ";".join(person_data['unlHRAddress'])
+            ])+'"'
         # use unlDirectoryAddress? as it is already parsed in the json from the person data
 #                     "unlDirectoryAddress": {
 #             "street-address": "318 LLS",
