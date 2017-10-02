@@ -2,9 +2,9 @@ jQuery.ajaxSetup({
     scriptCharset: "utf-8", //maybe "ISO-8859-1"
     contentType: "application/json; charset=utf-8"
 });
-
+listings = new DirectoryListing();
 function DirectoryListing(){
-	this.server = '';
+	this.DirectoryServer = '';  //this should be the value of the Library Directory application
 	this.currentLetter = 'a'; // letter currently viewing for 
 	this.view = null; //the view : faculty, staff or subjects
 	return this;
@@ -73,6 +73,7 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
       jQuery.each(libData.ExternalLinks,function(index,value){         
           if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='http://libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
           if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='http://libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
+          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='http://libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
           if (value.link_type == 'digitalcommons') { addLink = "<br /><a title='Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
       });
       thisPersonHtml += addLink;
@@ -123,7 +124,7 @@ DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
 	//else if (lettertoShow =='') { lettertoShow = 'a';}
      var people=[]; //array to hold people html elements
      //console.debug("Starting to create profiles in "+personElement.tag + personElement.tag_class + " for letter "+lettertoShow);
-	 jQuery.getJSON(this.server+'/addresses/'+this.view+'_listing/'+lettertoShow+'?callback=?',
+	 jQuery.getJSON(this.DirectoryServer+'/addresses/'+this.view+'_listing/'+lettertoShow+'?callback=?',
 			function(data){												
 				var columnCount = 0;
 				var letter='';  //the current first letter of the section to display 
@@ -207,7 +208,7 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
 	if (lettertoShow=='all') {lettertoShow='';}
 	//console.log("requesting json from "+'http://libdirectory.unl.edu/subjects/subject_listing/'+lettertoShow+'?callback=?');
      var pageCount;
-	jQuery.getJSON(this.server+'/subjects/subject_listing/'+lettertoShow+'?callback=?',
+	jQuery.getJSON(this.DirectoryServer+'/subjects/subject_listing/'+lettertoShow+'?callback=?',
 			function(data){
 				var subjectCount = 0;
 				var columnCount = 0;
@@ -319,11 +320,11 @@ DirectoryListing.prototype.letter_nav = function(){
 
     var self = this;
 	var currentURL = location.href.replace(location.hash,"");
-	if (this.view=='staff'){ letter_query = this.server+'/addresses/get_letters/staff/?callback=?';}
-	else if (this.view=='subjects'){letter_query = this.server+'/subjects/get_letters?callback=?';}
-	else if (this.view=='faculty') {letter_query=this.server+'/addresses/get_letters/faculty/?callback=?';}
+	if (this.view=='staff'){ letter_query = this.DirectoryServer+'/addresses/get_letters/staff/?callback=?';}
+	else if (this.view=='subjects'){letter_query = this.DirectoryServer+'/subjects/get_letters?callback=?';}
+	else if (this.view=='faculty') {letter_query=this.DirectoryServer+'/addresses/get_letters/faculty/?callback=?';}
 	else{return false;}
-	console.debug(this.server, this.currentLetter, this.view);
+	console.debug(this.DirectoryServer, this.currentLetter, this.view);
    jQuery.getJSON(letter_query,
     function(data) {
          jQuery.each(data.letters, function(letter,count){
