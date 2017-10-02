@@ -63,7 +63,7 @@ class Department extends Model {
 	
 	public $hasAndBelongsToMany = array(
 			'Staff'=>array(
-					'className'=>'StaffDatum',
+					'className'=>'StaffData',
 					'joinTable'=>'department_people',
 					'foreignKey'=>'department_id',
 					'associationForeignKey'=>'staff_id'

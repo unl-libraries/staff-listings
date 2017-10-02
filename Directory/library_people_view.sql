@@ -8,7 +8,7 @@ if((`publications`.`library_data`.`preferred_name` <> ''),
 `publications`.`incoming_people`.`GIVENNAME`) AS `first_name`,
 `publications`.`incoming_people`.`SN` AS `last_name`,
 `publications`.`incoming_people`.`DISPLAYNAME` AS `full_name`,
-`publications`.`incoming_people`.`EDUPERSONPRINCIPALNAME` AS `email`,
+`publications`.`incoming_people`.`MAIL` AS `email`,
 `publications`.`incoming_people`.`TELEPHONENUMBER` AS `phone`,
 `publications`.`incoming_people`.`UNLHRADDRESS` AS `address`,
 `publications`.`incoming_people`.`UNLPRIMARYAFFILIATION` AS `unl_status`,
@@ -39,7 +39,12 @@ from (
 left join `publications`.`department_people` on((`publications`.`library_data`.`id` = `publications`.`department_people`.`staff_id`)))
 left join `publications`.`departments` on((`publications`.`departments`.`id` = `publications`.`department_people`.`department_id`))) 
 where (`publications`.`incoming_people`.`UNLHRPRIMARYDEPARTMENT` = 'University Libraries') group by `publications`.`incoming_people`.`SN`,`publications`.`incoming_people`.`GIVENNAME`
-	-- libguides profile
+
+-- set the above back to query for MAIL as the mail field, and only run the cron job the 2-31 in hopes that skipping
+-- the first of the month will allow this to continue without breaking
+
+
+-- libguides profile
 SELECT DISTINCT people.id as data_row,a.first_name,a.last_name,g.owner as profile_id 
 FROM libguides.accounts as a LEFT JOIN libguides.guides as g ON g.owner=a.id INNER JOIN 
 (SELECT d.id,p.* from publications.library_data as d INNER JOIN publications.library_people as p ON d.nuid=p.nuid) as people ON (a.first_name=people.first_name and a.last_name=people.last_name) ORDER BY people.last_name 

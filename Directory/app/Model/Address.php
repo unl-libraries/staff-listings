@@ -46,7 +46,7 @@ class Address extends Model {
 	 */
 	public $hasOne = array(
 			'StaffData'=>array(
-					'className'=>'StaffDatum',
+					'className'=>'StaffData',
 					'foreignKey'=>'userid'
 			)
 	);

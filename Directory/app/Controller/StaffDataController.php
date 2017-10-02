@@ -85,16 +85,17 @@ class StaffDataController extends AppController {
 			$this->render(false);
 		}
 		else {
-			$this->StaffDatum->id=$id;
+			
+			$this->StaffData->id=$id;
 		
 		// Has any form data been POSTed?
 		if ($this->request->is('post') || $this->request->is('put')) {
 			//debug($this->request->data);
 			// If the form data can be validated and saved...
-			if ($this->StaffDatum->saveAssociated($this->request->data)) {
+			if ($this->StaffData->saveAssociated($this->request->data)) {
 				// Set a session flash message and redirect.
 				$this->Session->setFlash('Library data Saved!');
-				return $this->redirect($this->request->data['StaffDatum']['return_url']);
+				return $this->redirect($this->request->data['StaffData']['return_url']);
 			}
 			else {
 				debug($this->data);
@@ -107,7 +108,7 @@ class StaffDataController extends AppController {
 		// and hand it to the view.
 		$this->set('return_url',$this->referer());
 
-		$departments = $this->StaffDatum->Department->find('list');
+		$departments = $this->StaffData->Department->find('list');
 		//foreach ($departments as $top_dept){
 			//$department_options = $departments;
 		//}
@@ -115,8 +116,8 @@ class StaffDataController extends AppController {
 		$this->set('departments',$departments);
 		
 		if (!$this->request->data){
-			$this->request->data= $this->StaffDatum->findById($id);
-			$this->set('subjects',$this->StaffDatum->Subjects->find('list'));
+			$this->request->data= $this->StaffData->findById($id);
+			$this->set('subjects',$this->StaffData->Subjects->find('list'));
 			
 		}
 		$this->set('title_for_layout', 'Edit entry');
@@ -137,7 +138,7 @@ class StaffDataController extends AppController {
 			$this->render(false);
 		}
 		else {
-			$this->StaffDatum->id=$id;
+			$this->StaffData->id=$id;
 	
 			// Has any form data been POSTed?
 			if ($this->request->is('post') || $this->request->is('put')) {
@@ -145,11 +146,11 @@ class StaffDataController extends AppController {
 				// If the form data can be validated and saved...
 				//print_r($this->request->data['ExternalLinks']);
 				
-				if ($this->StaffDatum->saveAssociated($this->request->data)) {
+				if ($this->StaffData->saveAssociated($this->request->data)) {
 					// Set a session flash message and redirect.
 					
 					$this->Session->setFlash('Library data Saved!');
-					return $this->redirect($this->request->data['StaffDatum']['return_url']);
+					return $this->redirect($this->request->data['StaffData']['return_url']);
 				}
 				
 				else {
@@ -163,7 +164,7 @@ class StaffDataController extends AppController {
 			
 			$this->set('return_url',$this->referer());
 	
-			$departments = $this->StaffDatum->Department->find('list');
+			$departments = $this->StaffData->Department->find('list');
 			//foreach ($departments as $top_dept){
 			//$department_options = $departments;
 			//}
@@ -171,8 +172,8 @@ class StaffDataController extends AppController {
 			$this->set('departments',$departments);
 	
 			if (!$this->request->data){
-				$this->request->data= $this->StaffDatum->findById($id);
-				$this->set('subjects',$this->StaffDatum->Subjects->find('list'));
+				$this->request->data= $this->StaffData->findById($id);
+				$this->set('subjects',$this->StaffData->Subjects->find('list'));
 					
 			}
 			$this->set('title_for_layout', 'Edit entry');
