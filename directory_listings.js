@@ -59,7 +59,7 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
     	  //use the full column width for staff, since they have no pictures
     	  thisPersonHtml += '<div class="bp640-wdn-col-full">';
       }
-      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'</a>';
+      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'</a>&nbsp;&nbsp;<img src="images/icons/external-link-16.png"/>';
       thisPersonHtml +='<span class="wdn-subhead">'+person.unl_position;
       if (person.library_position) { thisPersonHtml += "<br />"+person.library_position+"\n";}
       thisPersonHtml += '</span></h5>';
