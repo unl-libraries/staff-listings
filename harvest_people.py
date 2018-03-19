@@ -17,7 +17,7 @@ import codecs
 
 ## open the csv file
 output = codecs.open("incoming_people.csv","w+")
-
+log_file = codecs.open("log.txt", "w+")
 ## print the headers
 print >> output, ",".join(['displayName',
                            'givenName',
@@ -35,33 +35,25 @@ print >> output, ",".join(['displayName',
 data = urllib2.urlopen("https://directory.unl.edu/departments/84/personnel?format=json")
 personnel = json.load(data)
 for person in personnel:
-    if str(person["eduPersonPrimaryAffiliation"][0]) != 'emeriti':        
-        uid = person["uid"]            
-        ## second query gets the personal information for each entry to ensure completeness of the data
-        # https://directory.unl.edu/people/{uid}.json
-        person_url = urllib2.urlopen("https://directory.unl.edu/people/"+str(uid)+".json")
-        #print person_url
-        person_data = json.load(person_url)
-        print >> output, '"'+"\",\"".join([
+  if person["eduPersonPrimaryAffiliation"] and str(person["eduPersonPrimaryAffiliation"][0]) != 'student' and person['unlHROrgUnitNumber'] and person['unlHROrgUnitNumber'][0]=='50000905': 
+	if (str(person["eduPersonPrimaryAffiliation"][0]) != 'emeriti' and str(person["eduPersonPrimaryAffiliation"][0]) != 'affiliate' and 'retiree' not in person["eduPersonAffiliation"] and ('staff' in person['eduPersonAffiliation'] or 'faculty' in person['eduPersonAffiliation'])):        
+        	uid = person["uid"]            
+        	## second query gets the personal information for each entry to ensure completeness of the data
+        	# https://directory.unl.edu/people/{uid}.json
+        	person_url = urllib2.urlopen("https://directory.unl.edu/people/"+str(uid)+".json")
+        	#print "https://directory.unl.edu/people/"+str(uid)+".json" 
+        	person_data = json.load(person_url)
+		#json.dump(person_data,log_file)
+		print >> log_file, person_data;
+		print >> output, '"'+'","'.join([
             ";".join(person_data['displayName']),
             ";".join(person_data['givenName']),            
             ";".join(person_data['sn']),
              str(uid),
             ";".join(person_data['eduPersonPrimaryAffiliation']),            
             ";".join(person_data['unlHRPrimaryDepartment']),
-            ";".join(person_data['title']),
-            ";".join(person_data['mail']),
-            ";".join(person_data['telephoneNumber']),               
-            ";".join(person_data['unlHRAddress'])
+            ";".join(person_data['title']) if person_data['title'] else '',
+            ";".join(person_data['mail']).lower() if person_data['mail'] else person_data['unlEmailAlias'][0]+'@unl.edu' if person_data['unlEmailAlias'] else '',
+            ";".join(person_data['telephoneNumber']) if person_data['telephoneNumber'] else '',               
+            ";".join(person_data['unlHRAddress']) if person_data['unlHRAddress'] else ''
             ])+'"'
-        # use unlDirectoryAddress? as it is already parsed in the json from the person data
-#                     "unlDirectoryAddress": {
-#             "street-address": "318 LLS",
-#             "locality": "Lincoln",
-#             "region": "NE",
-#             "postal-code": "68588-4100",
-    
-        
-    
-
-
