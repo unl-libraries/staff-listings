@@ -1,0 +1,9 @@
+Fetches and updates directory info for UNL library faculty and staff
+
+Requires the mysql jdbc library to run (setup with version 5.1.46)
+Requires Google gson library to run (setup with version 2.8.5)
+
+Database Settings go into a JavaProperties XML file dbsettings
+url = database connection url : jdbc:mysql://server:port/database
+user database username
+password = database password
