@@ -16,6 +16,7 @@ function DirectoryListing(){
  *  @param view string value of either 'faculty', 'staff' or 'subjects'
  */
 DirectoryListing.prototype.init = function(view){
+	this.firstLetter; //first letter for each view with content
 	if (location.hash.replace('#','')) {
 		this.currentLetter = location.hash.replace('#','');
 	}    
@@ -24,15 +25,6 @@ DirectoryListing.prototype.init = function(view){
 	this.letter_nav(view);
 	//initialize the page
 
-	  if (this.view == 'subjects') { 
-		  this.show_subjects({tag:'div',tag_class:'subject_info'},this.currentLetter);
-	  }
-	  else{
-		  this.show_people({tag:'div',tag_class:'directory_info'},this.currentLetter);
-	  }
-		jQuery('html, body').animate({
-	        scrollTop: jQuery("#directory_heading").offset().top
-	    }, 0);
 }
 
   
@@ -59,7 +51,7 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
     	  //use the full column width for staff, since they have no pictures
     	  thisPersonHtml += '<div class="bp640-wdn-col-full">';
       }
-      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'</a>&nbsp;&nbsp;<img src="images/icons/external-link-16.png"/>';
+      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img src="images/icons/external-link-16.png"/></a>';
       thisPersonHtml +='<span class="wdn-subhead">'+person.unl_position;
       if (person.library_position) { thisPersonHtml += "<br />"+person.library_position+"\n";}
       thisPersonHtml += '</span></h5>';
@@ -124,7 +116,7 @@ DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
 	//else if (lettertoShow =='') { lettertoShow = 'a';}
      var people=[]; //array to hold people html elements
      //console.debug("Starting to create profiles in "+personElement.tag + personElement.tag_class + " for letter "+lettertoShow);
-	 jQuery.getJSON('//'+this.DirectoryServer+'/addresses/'+this.view+'_listing/'+lettertoShow+'?callback=?',
+	 jQuery.getJSON(this.DirectoryServer+'/addresses/'+this.view+'_listing/'+lettertoShow+'?callback=?',
 			function(data){												
 				var columnCount = 0;
 				var letter='';  //the current first letter of the section to display 
@@ -208,7 +200,7 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
 	if (lettertoShow=='all') {lettertoShow='';}
 	//console.log("requesting json from "+'http://libdirectory.unl.edu/subjects/subject_listing/'+lettertoShow+'?callback=?');
      var pageCount;
-	jQuery.getJSON('//'+this.DirectoryServer+'/subjects/subject_listing/'+lettertoShow+'?callback=?',
+	jQuery.getJSON(this.DirectoryServer+'/subjects/subject_listing/'+lettertoShow+'?callback=?',
 			function(data){
 				var subjectCount = 0;
 				var columnCount = 0;
@@ -320,23 +312,45 @@ DirectoryListing.prototype.letter_nav = function(){
 
     var self = this;
 	var currentURL = location.href.replace(location.hash,"");
-	if (this.view=='staff'){ letter_query = '//'+this.DirectoryServer+'/addresses/get_letters/staff/?callback=?';}
-	else if (this.view=='subjects'){letter_query = '//'+this.DirectoryServer+'/subjects/get_letters?callback=?';}
-	else if (this.view=='faculty') {letter_query='//'+this.DirectoryServer+'/addresses/get_letters/faculty/?callback=?';}
+	if (this.view=='staff'){ letter_query = this.DirectoryServer+'/addresses/get_letters/staff/?callback=?';}
+	else if (this.view=='subjects'){letter_query = this.DirectoryServer+'/subjects/get_letters?callback=?';}
+	else if (this.view=='faculty') {letter_query=this.DirectoryServer+'/addresses/get_letters/faculty/?callback=?';}
 	else{return false;}
-	console.debug('//'+this.DirectoryServer, this.currentLetter, this.view);
+//	console.debug("current letter:"+this.currentLetter, this.view);
    jQuery.getJSON(letter_query,
     function(data) {
          jQuery.each(data.letters, function(letter,count){
                  if (count > 0) { 
                      jQuery("<a>",{html:letter.toUpperCase(), href:currentURL+"#"+letter,class:"letter letter_link letter_"+letter}).appendTo(".letters");
+                     if (!self.firstLetter){
+                    	 self.firstLetter = letter;
+//                    	 console.debug("first letter:"+self.firstLetter);
+                     }
                       
                 }
-                 else { jQuery("<span>",{html:letter.toUpperCase(),class:"letter"}).appendTo(".letters");}
+                 else { 
+                	 if (self.currentLetter == letter){
+                		self.currentLetter = null;
+                		 
+                	 }
+                	 jQuery("<span>",{html:letter.toUpperCase(),class:"letter"}).appendTo(".letters");
+                	 
+                 }                    
        });
+         if (!self.currentLetter){ self.currentLetter = self.firstLetter;}
+//         console.debug(self.currentLetter);
          //add the all option - eww - hate this
          jQuery("<a>",{html:"[ All ]", href:currentURL+"#all",class:"letter letter_link letter_all"}).appendTo(".letters");
          
+	   	  if (self.view == 'subjects') { 
+			  self.show_subjects({tag:'div',tag_class:'subject_info'},self.currentLetter);
+		  }
+		  else{
+			  self.show_people({tag:'div',tag_class:'directory_info'},self.currentLetter);
+		  }
+			jQuery('html, body').animate({
+		        scrollTop: jQuery("#directory_heading").offset().top
+		    }, 0);
          jQuery(".letter_"+self.currentLetter).addClass('selected'); //start with a as default
          jQuery(".letter_link").click(function(){   
         	 
@@ -354,7 +368,9 @@ DirectoryListing.prototype.letter_nav = function(){
              jQuery('.letter_link').removeClass('selected');
              //jQuery(this).addClass('selected');
              jQuery(".letter_"+self.currentLetter).addClass('selected'); //start with a as default
-            	
+ 			jQuery('html, body').animate({
+		        scrollTop: jQuery("#directory_heading").offset().top
+		    }, 0);	
          });
          
    });
