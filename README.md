@@ -26,12 +26,13 @@ To set up the javascript for use in a page:
   1. Include the css file `<link href="[path to css]/listings.css" rel="stylesheet" type="text/css" />`
   2. Include the js file `<script language="javascript" src="[path to js file]/directory_listings.js" type="text/javascript"></script>`
   3. Include an element with class "letters" for the letter navigation to be inserted into.  You can have multiple  (top and bottom for example)
+  			` <p id="letters" class="letters"></p>` or `<p id="subject_letters" class="letters"</p>`
   4. Include an element for the formatted listings to go into: 
   
-      `<div id="subject_people" class="dont-break-out"></div>` for subjects
+      `<div id="subject_people" class="overflow-visible"></div>` for subjects
 
-       `<div id="people" class="dont-break-out"></div>` for people
+       `<div id="people" class="overflow-visible"></div>` for people
   5. Include the following to initialize the page where [view name] = 'subjects' or 'staff' or 'faculty':
       
-      `<script language="javascript" type="text/javascript">listings = new DirectoryListing(); listings.init('[view name]');</script>` 
+      `<script language="javascript" type="text/javascript"> listings.init('[view name]');</script>` 
       
