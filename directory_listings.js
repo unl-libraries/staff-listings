@@ -4,7 +4,7 @@ jQuery.ajaxSetup({
 });
 listings = new DirectoryListing();
 function DirectoryListing(){
-	this.DirectoryServer = '';  //this should be the value of the Library Directory application without a leading http[s]://
+	this.DirectoryServer = '//libdirectory.unl.edu';  //this should be the value of the Library Directory application without a leading http[s]://
 	this.currentLetter = 'a'; // letter currently viewing for 
 	this.view = null; //the view : faculty, staff or subjects
 	return this;
@@ -17,6 +17,16 @@ function DirectoryListing(){
  */
 DirectoryListing.prototype.init = function(view){
 	this.firstLetter; //first letter for each view with content
+	this.loading_html = '<div class="dcf-bleed dcf-pt-8"><div class="dcf-text-center"><div id="floatingBarsG">\
+		<div class="blockG" id="rotateG_01"></div>\
+		<div class="blockG" id="rotateG_02"></div>\
+		<div class="blockG" id="rotateG_03"></div>\
+		<div class="blockG" id="rotateG_04"></div>\
+		<div class="blockG" id="rotateG_05"></div>\
+		<div class="blockG" id="rotateG_06"></div>\
+		<div class="blockG" id="rotateG_07"></div>\
+		<div class="blockG" id="rotateG_08"></div>\
+	</div></div></div>';
 	if (location.hash.replace('#','')) {
 		this.currentLetter = location.hash.replace('#','');
 	}    
@@ -36,28 +46,26 @@ DirectoryListing.prototype.init = function(view){
  */
 DirectoryListing.prototype.formatPersonData = function(person,libData){
       var thisPersonHtml ='';
-      thisPersonHtml +='<div class="bp480-wdn-col-one-half box_hidden">';
-      thisPersonHtml +='<div class="wdn-col box_dir" style="padding-top:1em;">';
+      thisPersonHtml += '<div class="dcf-col unl-bg-cream library-box" style="border: 3px solid rgb(233, 233, 233);">'; //'<div class="bp480-wdn-col-one-half box_hidden">';
+      thisPersonHtml += '    <div class="dcf-grid-halves@md dcf-col-100% dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col box_dir" style="padding-top:1em;">';
       if (this.view == 'faculty'){
     	  //we only show the person's picture if they are faculty
-    	  thisPersonHtml +='<div class="bp640-wdn-col-one-half">';      
-    	  thisPersonHtml +='    <figure class="wdn-frame">';
-    	  thisPersonHtml +='        <img alt="Headshot Photo of Faculty Member at UNL Libraries" src="https://directory.unl.edu/avatar/'+person.userid+'?s=large">';
-    	  thisPersonHtml +='    </figure>';
-    	  thisPersonHtml +='</div>';
-    	  thisPersonHtml +='<div class="bp640-wdn-col-one-half">';
+    	  thisPersonHtml += '<div class="dcf-col dcf-pt-2 dcf-pl-3">';    	  
+    	  thisPersonHtml += '    <img class="unl-frame-quad" alt="Headshot Photo of '+person.display_name+' at UNL Libraries" src="https://directory.unl.edu/avatar/'+person.userid+'?s=large">';    	  
+    	  thisPersonHtml += '</div>';
+    	  thisPersonHtml += '<div class="dcf-col dcf-pt-2 dcf-pr-3 dcf-pl-3">'; //<div class="bp640-wdn-col-one-half">';
       }
       else{
     	  //use the full column width for staff, since they have no pictures
-    	  thisPersonHtml += '<div class="bp640-wdn-col-full">';
+    	  thisPersonHtml += '<div class="dcf-col dcf-pt-2 dcf-pr-3 dcf-pl-3">'; //'<div class="bp640-wdn-col-full">';
       }
-      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img src="images/icons/external-link-16.png"/></a>';
-      thisPersonHtml +='<span class="wdn-subhead">'+person.unl_position;
+      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img src="//libraries.unl.edu/images/icons/external-link-16.png"/></a>';
+      thisPersonHtml +='<span class="dcf-subhead">'+person.unl_position;
       if (person.library_position) { thisPersonHtml += "<br />"+person.library_position+"\n";}
       thisPersonHtml += '</span></h5>';
-      thisPersonHtml +='    <p class="clear-top">'+person.address+'<br>';
+      thisPersonHtml +='    <p class="cdf-mt-0">'+person.address+'<br>'; //was clear-top class
       thisPersonHtml +='    '+person.phone+'<br>';
-      thisPersonHtml +='   <a href="mailto:'+person.email+'">'+person.email+'</a></p>';
+      thisPersonHtml +='   <a class="long-email" href="mailto:'+person.email+'">'+person.email+'</a></p>';
       //websites
       thisPersonHtml += "<p>";
       if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' /><\/a>&nbsp;";}
@@ -70,13 +78,14 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
       });
       thisPersonHtml += addLink;
       thisPersonHtml +='</p>';
-      thisPersonHtml +='</div>';
-      thisPersonHtml +='<div class="wdn-col-full">';
-      thisPersonHtml +='    <div class="box_no_border_dir" style="height:10%;padding-top:1em;padding-bottom:1em;">';
+      thisPersonHtml +='</div>'; //dcf-col dcf-pt-2
+      thisPersonHtml += '</div>'; //dcf-grid-halves
+      thisPersonHtml += '<div class="dcf-grid dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col-full">';
+      thisPersonHtml += '<div class="dcf-col-100% box_no_border_dir">'; //'    <div class="box_no_border_dir" style="height:10%;padding-top:1em;padding-bottom:1em;">';
       if (libData.Subjects.length > 0){
-    	  thisPersonHtml +='<div class="sub-bg">';
-          thisPersonHtml += '<h6 class="clear-top">Subject Specialties:</h6>';
-          thisPersonHtml += '<ul style="font-size:small;">';
+    	  thisPersonHtml +='<div class="sub-bg dcf-m-4 dcf-p-4 unl-bg-light-gray">';
+          thisPersonHtml += '<h4>Subject Specialties:</h4>'; //'<h6 class="clear-top">Subject Specialties:</h6>';
+          thisPersonHtml += '<ul>'; //'<ul style="font-size:small;">';
          jQuery.each(libData.Subjects, function(index,elem){        	 
               thisPersonHtml+='<li>'+elem.subject+'</li>';
          });
@@ -84,10 +93,9 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
          thisPersonHtml += "</div>"; //sub-bg
       }       
       
-      thisPersonHtml +='    </div>'; //wdn-col-full
-      thisPersonHtml +='</div>'; //bp640-wdn-col-one-half
-      thisPersonHtml +='</div>'; //wd-col box_dir
-      thisPersonHtml +='</div>'; //bp480-wd-col-one-half class
+      thisPersonHtml +='    </div>'; //dcf-col-100%  box no border
+      thisPersonHtml +='</div>'; // dcf-grid 
+      thisPersonHtml +='</div>'; // dcf-col unl-bg-cream      
       
       return thisPersonHtml;
  }
@@ -101,77 +109,38 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
 DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
 
     var self = this;
-	jQuery("#people").html('<section class="wdn-band"><div class="wdn-center"><div id="floatingBarsG">\
-			<div class="blockG" id="rotateG_01"></div>\
-			<div class="blockG" id="rotateG_02"></div>\
-			<div class="blockG" id="rotateG_03"></div>\
-			<div class="blockG" id="rotateG_04"></div>\
-			<div class="blockG" id="rotateG_05"></div>\
-			<div class="blockG" id="rotateG_06"></div>\
-			<div class="blockG" id="rotateG_07"></div>\
-			<div class="blockG" id="rotateG_08"></div>\
-		</div></div></section>');
+	jQuery("#people").html(self.loading_html);
 
 	if (lettertoShow=='all') {lettertoShow='';}
 	//else if (lettertoShow =='') { lettertoShow = 'a';}
      var people=[]; //array to hold people html elements
      //console.debug("Starting to create profiles in "+personElement.tag + personElement.tag_class + " for letter "+lettertoShow);
 	 jQuery.getJSON(this.DirectoryServer+'/addresses/'+this.view+'_listing/'+lettertoShow+'?callback=?',
-			function(data){												
-				var columnCount = 0;
+			function(data){									
 				var letter='';  //the current first letter of the section to display 
 				var lastLetter;  //previous letter so we know if we need to print the letter heading and close the section
-	         	thisPerson = ''; //string for the HTML to be appended
+	         	thisPerson = ''; //string for the HTML to be appended	         	
                 jQuery.each(data.people, function(index,value){                                	     
                 	letter = value.Address.last_name.charAt(0);
                 	//letter heading and navigation
-                	if (lastLetter != letter){
+                	if (lastLetter != letter){                		
                 		if (lastLetter){
-                			//only do these things if it's not the first letter 
-                			console.debug("this is the first row at letter "+letter);
-                			if (columnCount ==1){                		
-                				//finish the row to start the next letter section
-                				thisPerson += '</div>';                				
-	                		}
-	                		columnCount = 0; //reset the column count
+                			//only do these things if it's not the first letter
+                    		thisPerson += '</div></div></div>'; //close the boxes from the previous set
 	                		thisPerson +='<h6 style="text-align: right;line-height:2.5em;"><a href="javascript:window.scrollTo(0,0);" class="navToTop" style="border-bottom:0px;">return to top</a></h6>';
-	                		thisPerson += '</div>';
-	                		thisPerson += '</div>';
-	                		thisPerson += '</section>';
                 		}
                 		//create the letter navigation and header                                	
-                		thisPerson += '<section class="wdn-band">';
-                	        thisPerson += '<div class="wdn-inner-wrapper wdn-inner-padding-sm">';
-                	        thisPerson += '<div class="wdn-grid-set">';
-                	        //letter divider
-                	        thisPerson += '<div class="wdn-col-full">';
-                	        thisPerson += ' <div class="wdn-col-four-ninths wdn-center">';
-                	        thisPerson += '  <hr class="dir_right">';
-                	        thisPerson += ' </div>';
-                	        thisPerson += '<div class="wdn-col-one-ninth wdn-center">';
-                	        thisPerson += '<h3 class="clear-top" id='+letter.toLowerCase()+'>'+letter.toUpperCase()+'</h3>';
-                	        thisPerson += '</div>';
-                	        thisPerson += '<div class="wdn-col-four-ninths wdn-center">';
-                	        thisPerson += '<hr class="dir_left"></div></div>';
-                	        //wdn-grid-set div is still open
+                		thisPerson += self.letter_divider(letter);
+            	        //start the box layouts
+            	        thisPerson += '<div class="dcf-bleed dcf-pt8" ><div class="dcf-wrapper dcf-pb-5"><div class="dcf-grid-halves@sm dcf-col-gap-5 dcf-row-gap-5" id="block-contain">'; //starts off the boxes
                 	} //end of letter heading information                               	
                 	
                 	lastLetter = letter; //keep track of the letter we are on for next loop
-                	                
-                	if (columnCount==0){
-                		//start a new row                                
-                		thisPerson +='<div class="wdn-col-full" style="padding-top:10px;">';
-                	}
                 	thisPerson += self.formatPersonData(value.Address,value.StaffData);
-                	columnCount++;
-                	if (columnCount==2){
-                		columnCount=0;
-                		//finish the row                          		
-                   		thisPerson += '</div>'; //closes the wdn-col-full from column 1                                		                                			
-                		                   
-                	}    	
                  }); 
+                thisPerson += '</div></div></div>'; //close the boxes layout
                 thisPerson +='<h6 style="text-align: right;line-height:2.5em;"><a href="javascript:window.scrollTo(0,0);" class="navToTop" style="border-bottom:0px;">return to top</a></h6>';
+              
         		jQuery('#people').html(thisPerson);        		
         
         }); //end of complete json call
@@ -186,16 +155,7 @@ DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
  */
 DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow){
     var self = this;
-	jQuery("#subject_people").html('<section class="wdn-band"><div class="wdn-center"><div id="floatingBarsG">\
-			<div class="blockG" id="rotateG_01"></div>\
-			<div class="blockG" id="rotateG_02"></div>\
-			<div class="blockG" id="rotateG_03"></div>\
-			<div class="blockG" id="rotateG_04"></div>\
-			<div class="blockG" id="rotateG_05"></div>\
-			<div class="blockG" id="rotateG_06"></div>\
-			<div class="blockG" id="rotateG_07"></div>\
-			<div class="blockG" id="rotateG_08"></div>\
-		</div></div></section>');
+	jQuery("#subject_people").html(self.loading_html);
 	//console.log("showing subjects for letter "+lettertoShow);
 	if (lettertoShow=='all') {lettertoShow='';}
 	//console.log("requesting json from "+'http://libdirectory.unl.edu/subjects/subject_listing/'+lettertoShow+'?callback=?');
@@ -203,7 +163,6 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
 	jQuery.getJSON(this.DirectoryServer+'/subjects/subject_listing/'+lettertoShow+'?callback=?',
 			function(data){
 				var subjectCount = 0;
-				var columnCount = 0;
 				var letter='';
 				var lastLetter;
 				thisSubject = '';
@@ -214,54 +173,25 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
                        	if (lastLetter != letter){
                        		//new letter section coming up
                        		if (lastLetter){     
-                       			//if it's not the first letter we encountered close up the previous section
-                         	   if (columnCount ==1){
-                         		 //finish the row
-	 	                	   	thisSubject += '</div>'; //close the wdn-col-full from column 1	 	                	   
-                         	   }
-                        	   columnCount = 0;
-                        	  // thisSubject += '<div style="float:right;"><button class="navToTop" value="Back to top">Back to top</button></div>';
-	 	                	   //finish the letter section
-                        	   thisSubject +='<h6 style="text-align: right;line-height:2.5em;"><a href="javascript:window.scrollTo(0,0);" class="navToTop" style="border-bottom:0px;">return to top</a></h6>';	 	                	  
                        			thisSubject += '</div>';
                        			thisSubject += '</div>';
-                       			thisSubject += '</section>';
-                       			
+                       			thisSubject += '</div>';
+                         	   thisSubject +='<h6 style="text-align: right;line-height:2.5em;"><a href="javascript:window.scrollTo(0,0);" class="navToTop" style="border-bottom:0px;">return to top</a></h6>';
                        		}
-                       		thisSubject += '<section class="wdn-band">';
-                	        thisSubject += '<div class="wdn-inner-wrapper wdn-inner-padding-sm">';
-                	        thisSubject += '<div class="wdn-grid-set">';
-                	        //letter divider
-                	        thisSubject += '<div class="wdn-col-full">';
-                	        thisSubject += ' <div class="wdn-col-four-ninths wdn-center">';
-                	        thisSubject += '  <hr class="dir_right">';
-                	        thisSubject += ' </div>';
-                	        thisSubject += '<div class="wdn-col-one-ninth wdn-center">';
-                	        thisSubject += '<h3 class="clear-top" id='+letter.toLowerCase()+'>'+letter.toUpperCase()+'</h3>';
-                	        thisSubject += '</div>';
-                	        thisSubject += '<div class="wdn-col-four-ninths wdn-center">';
-                	        thisSubject += '<hr class="dir_left"></div></div>';
-                	        //wdn-grid-set div is still open                       		                       
+                  	        //letter divider
+                       		thisSubject += self.letter_divider(letter);  
+                       		//start the box layouts
+                       		thisSubject += '<div class="dcf-bleed dcf-pt-8"><div class="dcf-wrapper dcf-pb-5"><div class="dcf-grid-halves@sm dcf-col-gap-5 dcf-row-gap-5">';
                        	}
                        	lastLetter = letter;
                     	//end of letter heading information	                   	                    
                       //TODO: Alter code to display mulitple librarians for one subject together instead of separately in one long column entry.
 	                    jQuery.each(value.Faculty, function(findex,faculty){
-	                       	if (columnCount==0){
-	                       		//start a new row ?
-	                       		thisSubject += '<div class="wdn-col-full" style="padding-top:10px;">';
-	                       	}
 	                    	thisSubject += self.formatSubjectData(value.Subject.subject,faculty.Address);
-	                    	//console.log(faculty.Address.display_name + ' is column '+ columnCount);
-	                    	columnCount ++;	                    	
-	                        if (columnCount==2){	                        	
-	 	                	   columnCount = 0;
-	 	                	   //finish the row
-	 	                	   thisSubject += '</div>'; //close the wdn-col-full from column 1
-	 	                   } 
 	                    }); 
                 	}
                  });
+                thisSubject += '</div></div></div>'; //close the boxes layout
                 thisSubject +='<h6 style="text-align: right;line-height:2.5em;"><a href="javascript:window.scrollTo(0,0);" class="navToTop" style="border-bottom:0px;">return to top</a></h6>';
                 jQuery("#subject_people").html(thisSubject);
                 
@@ -277,32 +207,45 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
  */
 DirectoryListing.prototype.formatSubjectData = function(subject,subjectperson){
     var thisSubjectHtml ='';
-    thisSubjectHtml +='<div class="bp480-wdn-col-one-half box_hidden">';
-    thisSubjectHtml +='<div class="wdn-col-full" style="width:100%;padding:0;">';
-    thisSubjectHtml +='     <div class="sub-bg wdn-center" style="padding-top:1em;">';
-    thisSubjectHtml +='         <h5>'+subject+'</h5>';
-    thisSubjectHtml +='     </div>';
-    thisSubjectHtml +=' </div>';
-    thisSubjectHtml +=' <div class="wdn-col box_dir" style="padding-top:1em;">';
-    thisSubjectHtml +='         <div class="bp640-wdn-col-one-half">';
-    thisSubjectHtml +='             <figure class="wdn-frame">';
-    thisSubjectHtml +='                 <img alt="Headshot Photo of Staff Member at UNL Libraries" src="https://directory.unl.edu/avatar/'+subjectperson.userid+'?s=large">';
-    thisSubjectHtml +='         </figure>';
-    thisSubjectHtml +='         </div>';
-    thisSubjectHtml +='         <div class="bp640-wdn-col-one-half">';
-    thisSubjectHtml +='             <h5><a href="https://directory.unl.edu/people/'+subjectperson.userid+'" title="View '+subjectperson.display_name+' Profile">'+subjectperson.display_name+'</a>';
-    thisSubjectHtml +='<span class="wdn-subhead">'+subjectperson.unl_position;
+    thisSubjectHtml += '<div class="dcf-flex-col unl-bg-cream library-box" style="border: 3px solid rgb(233, 233, 233);">'; //'<div class="bp480-wdn-col-one-half box_hidden">';
+    thisSubjectHtml += ' <div class="dcf-col-100% unl-bg-lighter-gray dcf-pt-4 dcf-pb-4 dcf-txt-center">'; //'<div class="wdn-col-full" style="width:100%;padding:0;">';
+    thisSubjectHtml += '<h3>'+subject+'</h3>'; //'         <h5>'+subject+'</h5>';
+    thisSubjectHtml += '</div>'; 
+    thisSubjectHtml += '<div class="dcf-grid-halves@md dcf-col-100% dcf-col-gap-5 dcf-row-gap-5">'; //' </div>';
+    thisSubjectHtml += '<div class="dcf-col dcf-pt-4 dcf-pl-3">'; //'         <div class="bp640-wdn-col-one-half">';    
+    thisSubjectHtml += '<img class="unl-frame-quad" alt="Headshot Photo of '+subjectperson.display_name+' at UNL Libraries" src="https://directory.unl.edu/avatar/'+subjectperson.userid+'?s=large">';
+    thisSubjectHtml += '</div>';
+    thisSubjectHtml += '<div class="dcf-col dcf-pt-4 dcf-pr-3 dcf-pl-3">'; //'         <div class="bp640-wdn-col-one-half">';
+    thisSubjectHtml += '  <h5><a href="https://directory.unl.edu/people/'+subjectperson.userid+'" title="View '+subjectperson.display_name+' Profile">'+subjectperson.display_name+' <img src="https://uncl.nebraska.edu/images/icon/external-link-16.png"></a>';
+    thisSubjectHtml += '<span class="dcf-subhead">'+subjectperson.unl_position; //'<span class="wdn-subhead">'+subjectperson.unl_position;
     if (subjectperson.library_position){thisSubjectHtml +='<br/>'+subjectperson.library_position;}
-    thisSubjectHtml +='</span></h5>';
-    thisSubjectHtml +='             <p class="clear-top">'+subjectperson.address+'<br>';
-    thisSubjectHtml +='             '+subjectperson.phone+'<br>';
-    thisSubjectHtml +='         <a href="mailto:'+subjectperson.email+'">'+subjectperson.email+'</a></p>';
-    thisSubjectHtml +='     </div>';
-    thisSubjectHtml +=' </div>';
-    thisSubjectHtml +='</div>';
+    thisSubjectHtml += '</span></h5>';
+    thisSubjectHtml += '<p class="dcf-mt-0">' + subjectperson.address + '<br />'; //'             <p class="clear-top">'+subjectperson.address+'<br>';
+    thisSubjectHtml += subjectperson.phone+'<br />';
+    thisSubjectHtml += '<a class="long-email" href="mailto:'+subjectperson.email+'">'+subjectperson.email+'</a></p>';
+    thisSubjectHtml += '     </div>';
+    thisSubjectHtml += ' </div>';
+    thisSubjectHtml += '</div>';
     return thisSubjectHtml;
 }
 
+/**
+ * format the letter dividers 
+ */
+DirectoryListing.prototype.letter_divider = function(letter){
+	//letter divider
+	var letter_divider_html = '';
+    letter_divider_html += '<div class="dcf-grid-thirds">'; //'<div class="wdn-col-full">';
+    letter_divider_html += ' <div class="dcf-txt-center">'; //' <div class="wdn-col-four-ninths wdn-center">';
+    letter_divider_html += '  <hr class="dir_right">';
+    letter_divider_html += ' </div>';
+    letter_divider_html += '<div class="dcf-txt-center">';//'<div class="wdn-col-one-ninth wdn-center">';
+    letter_divider_html += '<h3 class="clear-top" id='+letter.toLowerCase()+'>'+letter.toUpperCase()+'</h3>';
+    letter_divider_html += '</div>';
+    letter_divider_html += '<div clss="dcf-txt-center">'; //'<div class="wdn-col-four-ninths wdn-center">';
+    letter_divider_html += '<hr class="dir_left"></div></div>';
+    return letter_divider_html;
+}
 /**
  * Creates the letter navigation at the top of a page
  * @param view string indicating what type of view ('staff','faculty' or 'subjects')
