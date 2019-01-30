@@ -4,7 +4,7 @@ jQuery.ajaxSetup({
 });
 listings = new DirectoryListing();
 function DirectoryListing(){
-	this.DirectoryServer = '//libdirectory.unl.edu';  //this should be the value of the Library Directory application without a leading http[s]://
+	this.DirectoryServer = '';  //this should be the value of the Library Directory application without a leading http[s]://
 	this.currentLetter = 'a'; // letter currently viewing for 
 	this.view = null; //the view : faculty, staff or subjects
 	return this;
@@ -59,7 +59,7 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
     	  //use the full column width for staff, since they have no pictures
     	  thisPersonHtml += '<div class="dcf-col dcf-pt-2 dcf-pr-3 dcf-pl-3">'; //'<div class="bp640-wdn-col-full">';
       }
-      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img src="//libraries.unl.edu/images/icons/external-link-16.png"/></a>';
+      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img alt = "Profile link of '+person.display_name+'" src="//libraries.unl.edu/images/icons/external-link-16.png"/></a>';
       thisPersonHtml +='<span class="dcf-subhead">'+person.unl_position;
       if (person.library_position) { thisPersonHtml += "<br />"+person.library_position+"\n";}
       thisPersonHtml += '</span></h5>';
@@ -68,12 +68,12 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
       thisPersonHtml +='   <a class="long-email" href="mailto:'+person.email+'">'+person.email+'</a></p>';
       //websites
       thisPersonHtml += "<p>";
-      if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' /><\/a>&nbsp;";}
+      if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;' title='View website for "+person.display_name+"'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' alt='Website for "+person.display_name+"'/><\/a>&nbsp;";}
       addLink = '';
       jQuery.each(libData.ExternalLinks,function(index,value){         
-          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
-          if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
-          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
+          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Linked in link' src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
+          if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Facebook link' src='//libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
+          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Twitter link' src='//libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
           if (value.link_type == 'digitalcommons') { addLink = "<br /><a title='Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
       });
       thisPersonHtml += addLink;
@@ -132,7 +132,7 @@ DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
                 		//create the letter navigation and header                                	
                 		thisPerson += self.letter_divider(letter);
             	        //start the box layouts
-            	        thisPerson += '<div class="dcf-bleed dcf-pt8" ><div class="dcf-wrapper dcf-pb-5"><div class="dcf-grid-halves@sm dcf-col-gap-5 dcf-row-gap-5" id="block-contain">'; //starts off the boxes
+            	        thisPerson += '<div class="dcf-bleed dcf-pt8" ><div class="dcf-wrapper dcf-pb-5"><div class="dcf-grid-halves@sm dcf-col-gap-5 dcf-row-gap-5">'; //starts off the boxes
                 	} //end of letter heading information                               	
                 	
                 	lastLetter = letter; //keep track of the letter we are on for next loop
@@ -216,7 +216,7 @@ DirectoryListing.prototype.formatSubjectData = function(subject,subjectperson){
     thisSubjectHtml += '<img class="unl-frame-quad" alt="Headshot Photo of '+subjectperson.display_name+' at UNL Libraries" src="https://directory.unl.edu/avatar/'+subjectperson.userid+'?s=large">';
     thisSubjectHtml += '</div>';
     thisSubjectHtml += '<div class="dcf-col dcf-pt-4 dcf-pr-3 dcf-pl-3">'; //'         <div class="bp640-wdn-col-one-half">';
-    thisSubjectHtml += '  <h5><a href="https://directory.unl.edu/people/'+subjectperson.userid+'" title="View '+subjectperson.display_name+' Profile">'+subjectperson.display_name+' <img src="https://uncl.nebraska.edu/images/icon/external-link-16.png"></a>';
+    thisSubjectHtml += '  <h5><a href="https://directory.unl.edu/people/'+subjectperson.userid+'" title="View '+subjectperson.display_name+' Profile">'+subjectperson.display_name+' <img alt="External link to '+subjectperson.display_name+' Profile" src="https://uncl.nebraska.edu/images/icon/external-link-16.png"></a>';
     thisSubjectHtml += '<span class="dcf-subhead">'+subjectperson.unl_position; //'<span class="wdn-subhead">'+subjectperson.unl_position;
     if (subjectperson.library_position){thisSubjectHtml +='<br/>'+subjectperson.library_position;}
     thisSubjectHtml += '</span></h5>';
