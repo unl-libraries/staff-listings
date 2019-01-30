@@ -51,7 +51,7 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
     	  //use the full column width for staff, since they have no pictures
     	  thisPersonHtml += '<div class="bp640-wdn-col-full">';
       }
-      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img src="images/icons/external-link-16.png"/></a>';
+      thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img alt = "Profile link of '+person.display_name+'" src="images/icons/external-link-16.png"/></a>';
       thisPersonHtml +='<span class="wdn-subhead">'+person.unl_position;
       if (person.library_position) { thisPersonHtml += "<br />"+person.library_position+"\n";}
       thisPersonHtml += '</span></h5>';
@@ -60,12 +60,12 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
       thisPersonHtml +='   <a href="mailto:'+person.email+'">'+person.email+'</a></p>';
       //websites
       thisPersonHtml += "<p>";
-      if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' /><\/a>&nbsp;";}
+      if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;' title='View website for "+person.display_name+"'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' alt='Website for "+person.display_name+"'/><\/a>&nbsp;";}
       addLink = '';
       jQuery.each(libData.ExternalLinks,function(index,value){         
-          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
-          if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
-          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img src='//libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
+          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Linked in link' src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
+          if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Facebook link' src='//libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
+          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Twitter link' src='//libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
           if (value.link_type == 'digitalcommons') { addLink = "<br /><a title='Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
       });
       thisPersonHtml += addLink;
