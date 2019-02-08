@@ -46,7 +46,8 @@ DirectoryListing.prototype.init = function(view){
  */
 DirectoryListing.prototype.formatPersonData = function(person,libData){
       var thisPersonHtml ='';
-      thisPersonHtml += '<div class="dcf-col unl-bg-cream library-box" style="border: 3px solid rgb(233, 233, 233);">'; //'<div class="bp480-wdn-col-one-half box_hidden">';
+      thisPersonHtml += '<div class="dcf-col unl-bg-cream library-box" >'; //'<div class="bp480-wdn-col-one-half box_hidden">';
+      thisPersonHtml += '<div style="border: 3px solid rgb(233, 233, 233);">'
       thisPersonHtml += '    <div class="dcf-grid-halves@md dcf-col-100% dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col box_dir" style="padding-top:1em;">';
       if (this.view == 'faculty'){
     	  //we only show the person's picture if they are faculty
@@ -57,13 +58,13 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
       }
       else{
     	  //use the full column width for staff, since they have no pictures
-    	  thisPersonHtml += '<div class="dcf-col dcf-pt-2 dcf-pr-3 dcf-pl-3">'; //'<div class="bp640-wdn-col-full">';
+    	  thisPersonHtml += '<div class="dcf-col-100% dcf-pt-2 dcf-pr-3 dcf-pl-3">'; //'<div class="bp640-wdn-col-full">';
       }
       thisPersonHtml +='    <h5><a href="https://directory.unl.edu/people/'+person.userid+'" title="View '+person.display_name+' Profile">'+person.display_name+'&nbsp;&nbsp;<img alt = "Profile link of '+person.display_name+'" src="//libraries.unl.edu/images/icons/external-link-16.png"/></a>';
       thisPersonHtml +='<span class="dcf-subhead">'+person.unl_position;
       if (person.library_position) { thisPersonHtml += "<br />"+person.library_position+"\n";}
       thisPersonHtml += '</span></h5>';
-      thisPersonHtml +='    <p class="cdf-mt-0">'+person.address+'<br>'; //was clear-top class
+      thisPersonHtml +='    <p class="dcf-mt-0">'+person.address+'<br>'; //was clear-top class
       thisPersonHtml +='    '+person.phone+'<br>';
       thisPersonHtml +='   <a class="long-email" href="mailto:'+person.email+'">'+person.email+'</a></p>';
       //websites
@@ -90,11 +91,12 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
               thisPersonHtml+='<li>'+elem.subject+'</li>';
          });
          thisPersonHtml += "</ul>\n";
-         thisPersonHtml += "</div>"; //sub-bg
+         thisPersonHtml += "</div>"; //sub-bg         
       }       
       
       thisPersonHtml +='    </div>'; //dcf-col-100%  box no border
       thisPersonHtml +='</div>'; // dcf-grid 
+      thisPersonHtml += '</div>';
       thisPersonHtml +='</div>'; // dcf-col unl-bg-cream      
       
       return thisPersonHtml;
@@ -240,9 +242,9 @@ DirectoryListing.prototype.letter_divider = function(letter){
     letter_divider_html += '  <hr class="dir_right">';
     letter_divider_html += ' </div>';
     letter_divider_html += '<div class="dcf-txt-center">';//'<div class="wdn-col-one-ninth wdn-center">';
-    letter_divider_html += '<h3 class="clear-top" id='+letter.toLowerCase()+'>'+letter.toUpperCase()+'</h3>';
+    letter_divider_html += '<h3 class="dcf-mt-0 dcf-txt-h1" id='+letter.toLowerCase()+'>'+letter.toUpperCase()+'</h3>';
     letter_divider_html += '</div>';
-    letter_divider_html += '<div clss="dcf-txt-center">'; //'<div class="wdn-col-four-ninths wdn-center">';
+    letter_divider_html += '<div class="dcf-txt-center">'; //'<div class="wdn-col-four-ninths wdn-center">';
     letter_divider_html += '<hr class="dir_left"></div></div>';
     return letter_divider_html;
 }
