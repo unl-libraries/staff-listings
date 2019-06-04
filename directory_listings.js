@@ -84,8 +84,7 @@ DirectoryListing.prototype.formatPersonData = function(person,libData,version){
       //websites
       thisPersonHtml += "<p>";
       if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;' title='View website for "+person.display_name+"'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' alt='Website for "+person.display_name+"'/><\/a>&nbsp;";}
-      addLink = '';
-    
+      addLink = '';    
       if (externalLinks){
 	      jQuery.each(externalLinks,function(index,value){         
 	          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Linked in link' src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
