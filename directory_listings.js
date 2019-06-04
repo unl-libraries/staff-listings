@@ -4,10 +4,12 @@ jQuery.ajaxSetup({
 });
 listings = new DirectoryListing();
 function DirectoryListing(){
-	this.DirectoryServer = '';  //this should be the value of the Library Directory application without a leading http[s]://
+	this.DirectoryServer = 'https://libdirectory.unl.edu';  //this should be the value of the Library Directory application without a leading http[s]://
+	//this.DirectoryServer = 'http://libapps.unl.edu/public/libdirectory';  //this should be the value of the Library Directory application without a leading http[s]://
 	this.currentLetter = 'a'; // letter currently viewing for 
 	this.view = null; //the view : faculty, staff or subjects
 	return this;
+	
 }
 
 /** 
@@ -34,7 +36,7 @@ DirectoryListing.prototype.init = function(view){
 	this.view = view;
 	this.letter_nav(view);
 	//initialize the page
-
+	console.log(this.DirectoryServer);
 }
 
   
@@ -44,10 +46,22 @@ DirectoryListing.prototype.init = function(view){
  * @param view  the type of view: 'faculty' or 'staff'
  * @returns {String} formatted HTML string
  */
-DirectoryListing.prototype.formatPersonData = function(person,libData){
+DirectoryListing.prototype.formatPersonData = function(person,libData,version){
+	  // handle the different versions for smooth migration from 2 to 3
+	if (version && version > "3.7"){    	  
+		  //version 3
+  	  externalLinks = libData.external_links;
+  	  subjects = libData.subjects;
+      }
+	else{
+		//version 2
+		 externalLinks =libData.ExternalLinks;
+		 subjects = libData.Subjects;
+	}
+      
       var thisPersonHtml ='';
-      thisPersonHtml += '<div class="dcf-col unl-bg-cream library-box" >'; //'<div class="bp480-wdn-col-one-half box_hidden">';
-      thisPersonHtml += '<div style="border: 3px solid rgb(233, 233, 233);">'
+      thisPersonHtml += '<div class="dcf-col unl-bg-cream" >'; //'<div class="bp480-wdn-col-one-half box_hidden">';
+      thisPersonHtml += '<div class="dcf-pt-2 box_dir" style="padding:1em; border: 3px solid rgb(233, 233, 233);">'
       thisPersonHtml += '    <div class="dcf-grid-halves@md dcf-col-100% dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col box_dir" style="padding-top:1em;">';
       if (this.view == 'faculty'){
     	  //we only show the person's picture if they are faculty
@@ -71,31 +85,35 @@ DirectoryListing.prototype.formatPersonData = function(person,libData){
       thisPersonHtml += "<p>";
       if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;' title='View website for "+person.display_name+"'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' alt='Website for "+person.display_name+"'/><\/a>&nbsp;";}
       addLink = '';
-      jQuery.each(libData.ExternalLinks,function(index,value){         
-          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Linked in link' src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
-          if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Facebook link' src='//libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
-          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Twitter link' src='//libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
-          if (value.link_type == 'digitalcommons') { addLink = "<br /><a title='Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
-      });
+    
+      if (externalLinks){
+	      jQuery.each(externalLinks,function(index,value){         
+	          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Linked in link' src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
+	          if (value.link_type == 'facebook'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Facebook link' src='//libraries.unl.edu/images/SocialMedia/facebook-20.png'/><\/a>";}
+	          if (value.link_type == 'twitter'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Twitter link' src='//libraries.unl.edu/images/SocialMedia/twitter-20.png'/><\/a>";}
+	          if (value.link_type == 'digitalcommons') { addLink = "<br /><a title='Publications/Vita for "+person.display_name+"' href='"+value.url+"'>Publications/Vita</a>";}
+	      });
+      }
       thisPersonHtml += addLink;
       thisPersonHtml +='</p>';
       thisPersonHtml +='</div>'; //dcf-col dcf-pt-2
       thisPersonHtml += '</div>'; //dcf-grid-halves
-      thisPersonHtml += '<div class="dcf-grid dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col-full">';
-      thisPersonHtml += '<div class="dcf-col-100% box_no_border_dir">'; //'    <div class="box_no_border_dir" style="height:10%;padding-top:1em;padding-bottom:1em;">';
-      if (libData.Subjects.length > 0){
+      
+      if (subjects && subjects.length > 0){
+    	  thisPersonHtml += '<div class="dcf-grid dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col-full">';
+    	  thisPersonHtml += '<div class="dcf-col-100% box_no_border_dir">'; //'    <div class="box_no_border_dir" style="height:10%;padding-top:1em;padding-bottom:1em;">';
+      
     	  thisPersonHtml +='<div class="sub-bg dcf-m-4 dcf-p-4 unl-bg-light-gray">';
           thisPersonHtml += '<h4>Subject Specialties:</h4>'; //'<h6 class="clear-top">Subject Specialties:</h6>';
           thisPersonHtml += '<ul>'; //'<ul style="font-size:small;">';
-         jQuery.each(libData.Subjects, function(index,elem){        	 
+         jQuery.each(subjects, function(index,elem){        	 
               thisPersonHtml+='<li>'+elem.subject+'</li>';
          });
          thisPersonHtml += "</ul>\n";
          thisPersonHtml += "</div>"; //sub-bg         
-      }       
-      
-      thisPersonHtml +='    </div>'; //dcf-col-100%  box no border
-      thisPersonHtml +='</div>'; // dcf-grid 
+         thisPersonHtml +='    </div>'; //dcf-col-100%  box no border
+         thisPersonHtml +='</div>'; // dcf-grid
+      }
       thisPersonHtml += '</div>';
       thisPersonHtml +='</div>'; // dcf-col unl-bg-cream      
       
@@ -121,9 +139,15 @@ DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
 			function(data){									
 				var letter='';  //the current first letter of the section to display 
 				var lastLetter;  //previous letter so we know if we need to print the letter heading and close the section
-	         	thisPerson = ''; //string for the HTML to be appended	         	
-                jQuery.each(data.people, function(index,value){                                	     
-                	letter = value.Address.last_name.charAt(0);
+	         	thisPerson = ''; //string for the HTML to be appended	   
+	         	var version = data.version;
+                jQuery.each(data.people, function(index,value){   
+                	if (version && version > "3.7"){
+                		letter = value.last_name.charAt(0);
+                	}
+                	else{
+                		letter = value.Address.last_name.charAt(0);
+                	}
                 	//letter heading and navigation
                 	if (lastLetter != letter){                		
                 		if (lastLetter){
@@ -138,7 +162,12 @@ DirectoryListing.prototype.show_people = function(personElement, lettertoShow){
                 	} //end of letter heading information                               	
                 	
                 	lastLetter = letter; //keep track of the letter we are on for next loop
-                	thisPerson += self.formatPersonData(value.Address,value.StaffData);
+                	if (version && version > "3.7"){
+                		thisPerson += self.formatPersonData(value,value.employee,version);
+                	}
+                	else{
+                		thisPerson += self.formatPersonData(value.Address,value.StaffData,'');
+                	}
                  }); 
                 thisPerson += '</div></div></div>'; //close the boxes layout
                 thisPerson +='<h6 style="text-align: right;line-height:2.5em;"><a href="javascript:window.scrollTo(0,0);" class="navToTop" style="border-bottom:0px;">return to top</a></h6>';
@@ -167,11 +196,23 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
 				var subjectCount = 0;
 				var letter='';
 				var lastLetter;
+				var version = data.version;
 				thisSubject = '';
                 jQuery.each(data.subjects, function(index,value){
-                	subjectCount++;                	
-                    if (value.Faculty.length > 0){   //we know we have at least one person assigned to the subject               
-                    	letter = value.Subject.subject.charAt(0);
+                	subjectCount++;             
+                	if (version && version > "3.7"){
+                		faculty = value.faculty;
+                	}
+                	else{
+                		faculty = value.Faculty;
+                	}
+                    if (faculty.length > 0){   //we know we have at least one person assigned to the subject    
+                    	if (version > "3.7"){
+                    		letter = value.subject.charAt(0);
+                    	}
+                    	else{
+                    		letter = value.Subject.subject.charAt(0);
+                    	}
                        	if (lastLetter != letter){
                        		//new letter section coming up
                        		if (lastLetter){     
@@ -188,8 +229,13 @@ DirectoryListing.prototype.show_subjects = function(subjectElement,lettertoShow)
                        	lastLetter = letter;
                     	//end of letter heading information	                   	                    
                       //TODO: Alter code to display mulitple librarians for one subject together instead of separately in one long column entry.
-	                    jQuery.each(value.Faculty, function(findex,faculty){
-	                    	thisSubject += self.formatSubjectData(value.Subject.subject,faculty.Address);
+	                    jQuery.each(faculty, function(findex,faculty){
+	                    	if (version > "3.7"){
+	                    		thisSubject += self.formatSubjectData(value.subject,faculty.address);
+	                    	}
+	                    	else{
+	                    		thisSubject += self.formatSubjectData(value.Subject.subject,faculty.Address);
+	                    	}
 	                    }); 
                 	}
                  });
