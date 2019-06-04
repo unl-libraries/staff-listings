@@ -4,8 +4,7 @@ jQuery.ajaxSetup({
 });
 listings = new DirectoryListing();
 function DirectoryListing(){
-	this.DirectoryServer = 'https://libdirectory.unl.edu';  //this should be the value of the Library Directory application without a leading http[s]://
-	//this.DirectoryServer = 'http://libapps.unl.edu/public/libdirectory';  //this should be the value of the Library Directory application without a leading http[s]://
+	this.DirectoryServer = '';  //this should be the value of the Library Directory application without a leading http[s]://	
 	this.currentLetter = 'a'; // letter currently viewing for 
 	this.view = null; //the view : faculty, staff or subjects
 	return this;
@@ -85,7 +84,6 @@ DirectoryListing.prototype.formatPersonData = function(person,libData,version){
       thisPersonHtml += "<p>";
       if(person.website) { thisPersonHtml += "<a href='"+person.website+"' style='border-bottom:none;' title='View website for "+person.display_name+"'><img src='//libraries.unl.edu/images/SocialMedia/web-20.png' alt='Website for "+person.display_name+"'/><\/a>&nbsp;";}
       addLink = '';
-    
       if (externalLinks){
 	      jQuery.each(externalLinks,function(index,value){         
 	          if (value.link_type == 'linkedin'){ thisPersonHtml += "&nbsp;<a href='"+value.url+"' style='border-bottom:none;'><img alt='Linked in link' src='//libraries.unl.edu/images/SocialMedia/linkedin-20.png'/><\/a>";}
