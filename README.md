@@ -2,16 +2,11 @@
 Code used to produce the faculty and staff listings in applications
 
 ## Includes fetches for data that can be imported in mysql database
-### harvest_people.py
- Python script that queries the UNL api at https://directory.unl.edu/ for individuals by department number.  
-  The attributes we need are written to a csv file.  
+### UpdateDirectory_java[version].jar
+Java file that queries an api for json personnel information  and updates a mysql database via jdbc
+This replaces the old harvest_people.py script
 
- Requires the following python imports:
-`json`
-`urllib2` for querying the api
-`codecs` for opening and writing to the file
-
-The csv writing is very simple joined output and didn't seem necessary to use full csv support.
+Launch it from the update.sh bash script
 
 ## javascript that uses json feeds to produces listings formatted to match the local CMS specifications
 
