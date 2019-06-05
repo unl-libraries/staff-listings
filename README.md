@@ -6,7 +6,7 @@ Code used to produce the faculty and staff listings in applications
 Java file that queries an api for json personnel information  and updates a mysql database via jdbc
 This replaces the old harvest_people.py script
 
-Launch it from the update.sh bash script
+Launch it from the update.sh bash script.  Can be setup as a cron job if desired.
 
 ## javascript that uses json feeds to produces listings formatted to match the local CMS specifications
 
