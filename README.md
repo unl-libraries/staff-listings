@@ -19,9 +19,10 @@ A function to create an alphabetical navigation for each version is included as 
 To set up the javascript for use in a page:
 
   1. Modify the `directory_listings.js` file to set the value of the directory service providing the json 
-        ``` around line 7
+        ``` 
+         around line 7
          this.DirectoryServer = '';
-         ```
+        ```
   	
   2. Include the js file `<script language="javascript" src="[path to js file]/directory_listings.js" type="text/javascript"></script>`
   3. Include an element with class "letters" for the letter navigation to be inserted into.  You can have multiple  (top and bottom for example)
