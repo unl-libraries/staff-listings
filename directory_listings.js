@@ -44,7 +44,7 @@ DirectoryListing.prototype.init = function(view){
  */
 DirectoryListing.prototype.specialLinks = function(person,links){
 	var linkHtml = '';
-	if (person.libguide_profile){ linkHtml += "<p><a href='"+person.libguide_profile+"' class='dcf-btn dcf-btn-primary dcf-w-max-xs'>Subject Specialties</a></p>";}
+	//if (person.libguide_profile){ linkHtml += "<p><a href='"+person.libguide_profile+"' class='dcf-btn dcf-btn-primary dcf-w-max-xs'>Subject Specialties</a></p>";}
 	 if (links){
 	      jQuery.each(externalLinks,function(index,value){         
 	          if (value.link_type == 'digitalcommons'){ linkHtml += "<p><a href='"+value.url+"' class='dcf-btn dcf-btn-primary dcf-w-max-xs'>Publications / Vitae</a></p>";}	          
@@ -63,12 +63,13 @@ DirectoryListing.prototype.formatPersonData = function(person,libData,version){
 	  // handle the different versions for smooth migration from 2 to 3
 	if (version && version > "3.7"){    	  
 		  //version 3
-  	  externalLinks = libData.external_links;  	  
+  	  externalLinks = libData.external_links;
+  	  subjects = libData.subjects;
       }
 	else{
 		//version 2
 		 externalLinks =libData.ExternalLinks;
-		
+		 subjects = libData.Subjects;
 	}
       
       var thisPersonHtml ='';
@@ -112,7 +113,22 @@ DirectoryListing.prototype.formatPersonData = function(person,libData,version){
       thisPersonHtml +='</p>';
       thisPersonHtml +='</div>'; //dcf-col dcf-pt-2
       thisPersonHtml += '</div>'; //dcf-grid-halves
-      //removed subject specialist boxes
+      
+      if (subjects && subjects.length > 0){
+    	  thisPersonHtml += '<div class="dcf-grid dcf-col-gap-5 dcf-row-gap-5">'; //'<div class="wdn-col-full">';
+    	  thisPersonHtml += '<div class="dcf-col-100% box_no_border_dir">'; //'    <div class="box_no_border_dir" style="height:10%;padding-top:1em;padding-bottom:1em;">';
+      
+    	  thisPersonHtml +='<div class="sub-bg dcf-m-4 dcf-p-4 unl-bg-light-gray">';
+          thisPersonHtml += '<h4>Subject Specialties:</h4>'; //'<h6 class="clear-top">Subject Specialties:</h6>';
+          thisPersonHtml += '<ul>'; //'<ul style="font-size:small;">';
+         jQuery.each(subjects, function(index,elem){        	 
+              thisPersonHtml+='<li>'+elem.subject+'</li>';
+         });
+         thisPersonHtml += "</ul>\n";
+         thisPersonHtml += "</div>"; //sub-bg         
+         thisPersonHtml +='    </div>'; //dcf-col-100%  box no border
+         thisPersonHtml +='</div>'; // dcf-grid
+      }
       thisPersonHtml += '</div>';
       thisPersonHtml +='</div>'; // dcf-col unl-bg-cream      
       
